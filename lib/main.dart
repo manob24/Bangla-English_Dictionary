@@ -2,6 +2,8 @@
 import 'package:flutter/material.dart';
 //import 'package:newdictionary/pages/search.dart';
 import 'package:newdictionary/pages/home.dart';
+import 'package:newdictionary/pages/jsonPage.dart';
+import 'package:newdictionary/pages/wordList.dart';
 
 void main() {
   runApp(MaterialApp(
@@ -22,7 +24,7 @@ void main() {
         bodyText2: TextStyle(fontSize: 14.0, fontFamily: 'Hind'),
       ),
     ),
-    home: Home(),
+    home: WordData(),
 
   ));
 }
