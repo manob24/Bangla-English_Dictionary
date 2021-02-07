@@ -7,6 +7,7 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   bool isSearching = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
