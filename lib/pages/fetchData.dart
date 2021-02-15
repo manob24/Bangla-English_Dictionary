@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:newdictionary/pages/loading.dart';
 import 'package:newdictionary/word.dart';
 
 import 'package:newdictionary/pages/home.dart';
@@ -37,6 +38,6 @@ class _FetchDataState extends State<FetchData> {
 
   @override
   Widget build(BuildContext context) {
-    return Home();
+    return !isLoading?Home():Loading();
   }
 }

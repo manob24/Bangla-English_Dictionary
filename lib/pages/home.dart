@@ -12,7 +12,7 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: !isSearching? Text("Bangla-English Dictionary"):
+        title: !isSearching? Text("English-Bangla Dictionary"):
         TextField(
           decoration: InputDecoration(
             icon: Icon(Icons.search),
