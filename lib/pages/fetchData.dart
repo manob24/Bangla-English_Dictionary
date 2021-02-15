@@ -37,9 +37,6 @@ class _FetchDataState extends State<FetchData> {
 
   @override
   Widget build(BuildContext context) {
-    return isLoading?Scaffold(
-      body: CircularProgressIndicator(),
-    )
-    :Home();
+    return Home();
   }
 }
