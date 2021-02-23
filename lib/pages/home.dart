@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -40,7 +41,6 @@ class _HomeState extends State<Home> {
         ],
 
       ),
-      body: SafeArea(child: Text("home screen")),
     );
   }
 }

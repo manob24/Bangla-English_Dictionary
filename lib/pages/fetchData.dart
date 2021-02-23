@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:newdictionary/pages/loading.dart';
+import 'package:newdictionary/pages/showWord.dart';
 import 'package:newdictionary/word.dart';
 
 import 'package:newdictionary/pages/home.dart';
@@ -15,16 +16,20 @@ class FetchData extends StatefulWidget {
 }
 
 class _FetchDataState extends State<FetchData> {
-  bool isLoading = true;
-  List data;
-  List<Word> words;
-  final random = new Random();
-  int m = 17000;
-  int p = 2038074743;
-  int a, as;
-  int b, bs;
+  bool isLoading = true;  // Data is Loading and Hashing
+  List data;    //parsed json of words
+  List<Word> words;   //decoded from json(data)
+  final random = new Random();  //to get random numbers for a,b
+  int m = 17000;    //number of slots
+  int p = 2038074743; // a prime number which will be used to mod in universal hash
+  int bigPrime = 2760727302517;
+  int a, b;  // random numbers which used in primary universal hashing,
+  int as, bs; // random numbers which used in secondary hashing
+  List<List<int>> secondaryHashData = new List.generate(17000, (index) => []);
 
-  List<List<Word>> hashedList = new List.generate(17000, (index) => []);
+  List<List<Word>> hashedList = new List.generate(17000, (index) => []);  // list of words after hashing
+
+  //fetch data from json file
   void getData() async{
     String dictionaryText = await rootBundle.loadString('assets/BanglaDictionary.json');
     data = json.decode(dictionaryText);
@@ -38,6 +43,7 @@ class _FetchDataState extends State<FetchData> {
     });
   }
 
+  //finding power of a number
   int pow(int base, int power){
     int result = 1;
     for(int i = 0; i<power; ++i){
@@ -46,14 +52,18 @@ class _FetchDataState extends State<FetchData> {
     return result;
   }
 
+  //finding key of a string
   int getKey(String name){
+    name = name.replaceAll(new RegExp(r'[^\w\\s]+'),'');
+    name.toLowerCase();
     int key = 0;
     int len = name.length;
     for(int i = len-1; i>=0; --i){
-      key = (key + ((name.codeUnitAt(i)-97)*pow(26, i))%p)%p;
+      key = (key + ((name.codeUnitAt(i)-97)*pow(26, i))%bigPrime)%bigPrime;
     }
     return key;
   }
+
 
   void primaryHash(){
     a = 1+random.nextInt(p-1);
@@ -67,15 +77,22 @@ class _FetchDataState extends State<FetchData> {
     secondaryHash();
   }
 
+  //resolving collision in primary hash
   void secondaryHash(){
-    as = 1+random.nextInt(p-1);
-    bs = random.nextInt(p);
     for(int i = 0; i<m; ++i){
+      int as = 1+random.nextInt(p-1);
+      int bs = random.nextInt(p);
+
       List<Word> copied = List.from(hashedList[i]);
       hashedList[i].clear();
       int n = copied.length;
       int mj = n*n;
       hashedList[i].length = mj;
+
+      secondaryHashData[i].length = 3;
+      secondaryHashData[i][0] = mj;
+      secondaryHashData[i][1] = as;
+      secondaryHashData[i][2] = bs;
 
       for(Word word in copied){
         int k = getKey(word.en);
@@ -83,6 +100,21 @@ class _FetchDataState extends State<FetchData> {
         hashedList[i][key] = word;
       }
     }
+    search("carry");
+  }
+
+  //searching a word
+  Word search(String word){
+    int k = getKey(word);
+    int pkey = ((a*k+b)%p)%m;
+    int mj = secondaryHashData[pkey][0];
+    int as = secondaryHashData[pkey][1];
+    int bs = secondaryHashData[pkey][2];
+    int skey = ((as*k+bs)%p)%mj;
+    Word wd = hashedList[pkey][skey];
+    Navigator.of(context).push(MaterialPageRoute(builder: (context)=>ShowWord(word: wd)));
+    print(hashedList[pkey][skey].en);
+    return hashedList[pkey][skey];
   }
 
   @override
