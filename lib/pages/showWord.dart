@@ -72,7 +72,7 @@ class ShowWord extends StatelessWidget {
             if(sents.isNotEmpty)
             Container(
                 padding: EdgeInsets.all(10),
-                child: Center(child: Text(sents, style: style))
+                child: Text(sents, style: style)
             ),
           ],
       ),
