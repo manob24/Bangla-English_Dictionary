@@ -39,6 +39,11 @@ class _HomeState extends State<Home> {
                 elevation: 5.0,
                 borderRadius: BorderRadius.all(Radius.circular(30.0)),
                 child: TextField(
+                    onChanged: (value){
+                      setState(() {
+                        isWordFound = true;
+                      });
+                    },
                     controller: textEditingController,
                     style:TextStyle(color: Colors.black, fontSize: 16.0),
                     decoration:InputDecoration(
@@ -54,7 +59,6 @@ class _HomeState extends State<Home> {
                             onPressed: (){
                               word = textEditingController.text;
                               if(word.isNotEmpty) {
-                                isWordFound = true;
                                 Word newWord = khojData.search(word);
                                 if (newWord != null) {
                                   Navigator.of(context).push(MaterialPageRoute(
@@ -63,7 +67,9 @@ class _HomeState extends State<Home> {
                                   textEditingController.clear();
                                 }
                                 else {
-                                  isWordFound = false;
+                                  setState(() {
+                                    isWordFound = false;
+                                  });
                                 }
                               }
                               else{
@@ -72,6 +78,7 @@ class _HomeState extends State<Home> {
                             },
                           ),
                         ),
+                        errorText: !isWordFound? 'Sorry! No such word found': null,
                         border:InputBorder.none,
                         hintText: "Search a Word"
                     )

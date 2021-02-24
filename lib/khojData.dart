@@ -43,8 +43,7 @@ class KhojData{
 
   //finding key of a string
   int getKey(String name){
-    name = name.replaceAll(new RegExp(r'[^\w\\s]+'),'');
-    name.toLowerCase();
+    name = formatWord(name);
     int key = 1;
     int len = name.length;
     for(int i = len-1; i>=0; --i){
@@ -86,26 +85,51 @@ class KhojData{
       for(Word word in copied){
         int k = getKey(word.en);
         int key = ((as*k+bs)%p)%mj;
+        while(hashedList[i][key]!=null){
+          key = (key+1)%mj;
+        }
         hashedList[i][key] = word;
       }
     }
   }
-
+  String formatWord(String word){
+    word = word.replaceAll(new RegExp(r'[^\w\\s]+'),'');
+    word = word.toLowerCase();
+    return word;
+  }
   //searching a word
   Word search(String word){
+    word = formatWord(word);
+    print(word);
     int k = getKey(word);
+    print(k);
     int pkey = ((a*k+b)%p)%m;
+    print(pkey);
     int mj = secondaryHashData[pkey][0];
     int as = secondaryHashData[pkey][1];
     int bs = secondaryHashData[pkey][2];
+    print("mj $mj as $as bs $bs");
     int skey;
+    String foundWord;
     Word found;
-    if(mj != 0){
-      skey = ((as*k+bs)%p)%mj;
-      found = hashedList[pkey][skey];
+    if(mj == 1){
+      found = hashedList[pkey][0];
+      foundWord = formatWord(found.en);
     }
-
-    if(mj == 0 || found == null || found.en != word){
+    else if(mj > 1){
+      skey = ((as*k+bs)%p)%mj;
+      while(hashedList[pkey][skey]!=null){
+        found = hashedList[pkey][skey];
+        foundWord = formatWord(found.en);
+        if( foundWord!= word){
+          skey = (skey+1)%mj;
+        }
+        else{
+          break;
+        }
+      }
+    }
+    if(mj == 0 || found == null || foundWord != word){
       return null;
     }
     return found;
