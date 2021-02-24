@@ -19,6 +19,26 @@ class _HomeState extends State<Home> {
     khojData = new KhojData();
     khojData.getData();
   }
+  void submit(){
+    word = textEditingController.text;
+    if(word.isNotEmpty) {
+      Word newWord = khojData.search(word);
+      if (newWord != null) {
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) =>
+                ShowWord(word: newWord)));
+        textEditingController.clear();
+      }
+      else {
+        setState(() {
+          isWordFound = false;
+        });
+      }
+    }
+    else{
+      print("empty field");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +50,7 @@ class _HomeState extends State<Home> {
             heightFactor: 0.25,
             widthFactor: 1,
             child: Container(
-              color: Colors.blue,
+              color: Colors.green,
             ),
           ),
           new Align(
@@ -44,12 +64,15 @@ class _HomeState extends State<Home> {
                         isWordFound = true;
                       });
                     },
+                    onSubmitted: (data){
+                      submit();
+                    },
                     controller: textEditingController,
                     style:TextStyle(color: Colors.black, fontSize: 16.0),
                     decoration:InputDecoration(
                         contentPadding: EdgeInsets.symmetric(horizontal: 32.0, vertical: 14.0),
                         suffixIcon: Material(
-                          color: Colors.lightBlueAccent,
+                          color: Colors.lightGreen,
                           elevation: 2.0,
                           borderRadius: BorderRadius.all(Radius.circular(30.0)),
                           child: IconButton(
@@ -57,24 +80,7 @@ class _HomeState extends State<Home> {
                             color: Colors.black,
                             tooltip: 'search word',
                             onPressed: (){
-                              word = textEditingController.text;
-                              if(word.isNotEmpty) {
-                                Word newWord = khojData.search(word);
-                                if (newWord != null) {
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (context) =>
-                                          ShowWord(word: newWord)));
-                                  textEditingController.clear();
-                                }
-                                else {
-                                  setState(() {
-                                    isWordFound = false;
-                                  });
-                                }
-                              }
-                              else{
-                                print("empty field");
-                              }
+                              submit();
                             },
                           ),
                         ),

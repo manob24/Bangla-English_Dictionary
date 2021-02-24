@@ -17,10 +17,10 @@ class ShowWord extends StatelessWidget {
     final TextStyle headingTextStyle = TextStyle(fontSize: 18);
     final BoxDecoration decoration = BoxDecoration(
       borderRadius: BorderRadius.circular(8.0),
-      color: Colors.purpleAccent,
+      color: Colors.lightGreen,
       boxShadow: [
         BoxShadow(
-          color: Colors.black,
+          color: Colors.green,
           blurRadius: 3.0,
           spreadRadius: 0.0,
           offset: Offset(2.0, 2.0), // shadow direction: bottom right
@@ -47,6 +47,7 @@ class ShowWord extends StatelessWidget {
               height: 30,
               child: Center(child: Text("বাংলা অর্থ",style: headingTextStyle,))
             ),
+            if(bn_syns.isNotEmpty)
             Container(
               padding: EdgeInsets.all(10),
               child: Center(child: Text(bn_syns, style: style,))
@@ -57,6 +58,7 @@ class ShowWord extends StatelessWidget {
               height: 30,
               child: Center(child: Text("English Synonyms",style: headingTextStyle,))
             ),
+            if(en_syns.isNotEmpty)
             Container(
               padding: EdgeInsets.all(10),
               child: Center(child: Text(en_syns,style: style))
@@ -67,6 +69,7 @@ class ShowWord extends StatelessWidget {
                 height: 30,
                 child: Center(child: Text("Example",style: headingTextStyle,))
             ),
+            if(sents.isNotEmpty)
             Container(
                 padding: EdgeInsets.all(10),
                 child: Center(child: Text(sents, style: style))
