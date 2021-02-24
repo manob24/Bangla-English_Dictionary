@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:newdictionary/khojData.dart';
+import 'package:newdictionary/fetchData.dart';
 import 'package:newdictionary/word.dart';
 import 'package:newdictionary/pages/showWord.dart';
 
@@ -12,17 +12,17 @@ class _HomeState extends State<Home> {
   bool isWordFound = true;
   TextEditingController textEditingController = new TextEditingController();
   String word;
-  KhojData khojData;
+  FetchData fetchData;
   @override
   void initState(){
     super.initState();
-    khojData = new KhojData();
-    khojData.getData();
+    fetchData = new FetchData();
+    fetchData.getData();
   }
   void submit(){
     word = textEditingController.text;
     if(word.isNotEmpty) {
-      Word newWord = khojData.search(word);
+      Word newWord = fetchData.search(word);
       if (newWord != null) {
         Navigator.of(context).push(MaterialPageRoute(
             builder: (context) =>

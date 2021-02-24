@@ -4,9 +4,8 @@ import 'dart:math';
 import 'package:flutter/services.dart';
 import 'package:newdictionary/word.dart';
 
-class KhojData{
-
-  KhojData();
+class FetchData{
+  FetchData();
   bool isLoading = true;  // Data is Loading and Hashing
   List data;    //parsed json of words
   List<Word> words;   //decoded from json(data)
@@ -15,8 +14,7 @@ class KhojData{
   int p = 2038074743; // a prime number which will be used to mod in universal hash
   int bigPrime = 2760727302517;
   int a, b;  // random numbers which used in primary universal hashing,
-//  int as, bs; // random numbers which used in secondary hashing
-  List<List<int>> secondaryHashData = new List.generate(17000, (index) => []);
+  List<List<int>> secondaryHashData = new List.generate(17000, (index) => []); //m,a,b for secondary hash
 
   List<List<Word>> hashedList = new List.generate(17000, (index) => []);  // list of words after hashing
 
@@ -85,7 +83,7 @@ class KhojData{
       for(Word word in copied){
         int k = getKey(word.en);
         int key = ((as*k+bs)%p)%mj;
-        while(hashedList[i][key]!=null){
+        while(hashedList[i][key]!=null){  //linear probing
           key = (key+1)%mj;
         }
         hashedList[i][key] = word;
@@ -100,15 +98,11 @@ class KhojData{
   //searching a word
   Word search(String word){
     word = formatWord(word);
-    print(word);
     int k = getKey(word);
-    print(k);
     int pkey = ((a*k+b)%p)%m;
-    print(pkey);
     int mj = secondaryHashData[pkey][0];
     int as = secondaryHashData[pkey][1];
     int bs = secondaryHashData[pkey][2];
-    print("mj $mj as $as bs $bs");
     int skey;
     String foundWord;
     Word found;

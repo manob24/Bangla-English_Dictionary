@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:newdictionary/word.dart';
-
+import 'package:newdictionary/stringExtension.dart';
 class ShowWord extends StatelessWidget {
   final Word word;
 //  final TextStyle style;
@@ -29,11 +29,11 @@ class ShowWord extends StatelessWidget {
     );
     return Scaffold(
       appBar: AppBar(
-        title: Text(word.en),
+        title: Text(word.en.capitalizeFirstofEach, style: TextStyle(fontSize: 20),),
         centerTitle: true,
         toolbarHeight: 60,
         bottom: PreferredSize(
-          child: Text(word.bn),
+          child: Text(word.bn, style: TextStyle(fontSize: 18),),
           preferredSize: null,
         ),
       ),
@@ -61,7 +61,7 @@ class ShowWord extends StatelessWidget {
             if(en_syns.isNotEmpty)
             Container(
               padding: EdgeInsets.all(10),
-              child: Center(child: Text(en_syns,style: style))
+              child: Center(child: Text(en_syns.capitalizeFirstofEach,style: style))
             ),
             if(sents.isNotEmpty)
             Container(
