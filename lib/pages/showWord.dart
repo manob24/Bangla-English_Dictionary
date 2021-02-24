@@ -61,7 +61,7 @@ class ShowWord extends StatelessWidget {
             if(en_syns.isNotEmpty)
             Container(
               padding: EdgeInsets.all(10),
-              child: Center(child: Text(en_syns.capitalizeFirstofEach,style: style))
+              child: Center(child: Text(en_syns.capitalizeAfterComma,style: style))
             ),
             if(sents.isNotEmpty)
             Container(
