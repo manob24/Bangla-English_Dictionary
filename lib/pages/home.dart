@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
+import 'package:newdictionary/khojData.dart';
+import 'package:newdictionary/word.dart';
+import 'package:newdictionary/pages/showWord.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -7,40 +9,77 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  bool isSearching = false;
+  bool isWordFound = true;
+  TextEditingController textEditingController = new TextEditingController();
+  String word;
+  KhojData khojData;
+  @override
+  void initState(){
+    super.initState();
+    khojData = new KhojData();
+    khojData.getData();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: !isSearching? Text("English-Bangla Dictionary"):
-        TextField(
-          decoration: InputDecoration(
-            icon: Icon(Icons.search),
-            hintText: "Enter word",
+      body: new Stack(
+        children: <Widget>[
+          new FractionallySizedBox(
+            alignment: Alignment.topLeft,
+            heightFactor: 0.25,
+            widthFactor: 1,
+            child: Container(
+              color: Colors.blue,
+            ),
           ),
-        ),
-        actions: [
-          !isSearching?
-          IconButton(
-            icon: Icon(Icons.search),
-            onPressed: (){
-              setState(() {
-                isSearching = true;
-              });
-            },
-          ):
-          IconButton(
-            icon: Icon(Icons.cancel_rounded),
-            onPressed: (){
-              setState(() {
-                isSearching = false;
-              });
-            },
+          new Align(
+              alignment: const Alignment(-1, -0.56),
+              child: Material(
+                elevation: 5.0,
+                borderRadius: BorderRadius.all(Radius.circular(30.0)),
+                child: TextField(
+                    controller: textEditingController,
+                    style:TextStyle(color: Colors.black, fontSize: 16.0),
+                    decoration:InputDecoration(
+                        contentPadding: EdgeInsets.symmetric(horizontal: 32.0, vertical: 14.0),
+                        suffixIcon: Material(
+                          color: Colors.lightBlueAccent,
+                          elevation: 2.0,
+                          borderRadius: BorderRadius.all(Radius.circular(30.0)),
+                          child: IconButton(
+                            icon: Icon(Icons.search),
+                            color: Colors.black,
+                            tooltip: 'search word',
+                            onPressed: (){
+                              word = textEditingController.text;
+                              if(word.isNotEmpty) {
+                                isWordFound = true;
+                                Word newWord = khojData.search(word);
+                                if (newWord != null) {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (context) =>
+                                          ShowWord(word: newWord)));
+                                  textEditingController.clear();
+                                }
+                                else {
+                                  isWordFound = false;
+                                }
+                              }
+                              else{
+                                print("empty field");
+                              }
+                            },
+                          ),
+                        ),
+                        border:InputBorder.none,
+                        hintText: "Search a Word"
+                    )
+                ),
+              )
           )
         ],
-
-      ),
+      )
     );
   }
 }

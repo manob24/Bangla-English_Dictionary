@@ -1,13 +1,12 @@
 
 import 'package:flutter/material.dart';
-import 'package:newdictionary/pages/fetchData.dart';
 import 'package:newdictionary/route_generator.dart';
 
 void main() {
   runApp(MaterialApp(
     theme: ThemeData(
       // Define the default brightness and colors.
-      brightness: Brightness.dark,
+      brightness: Brightness.light,
       primaryColor: Colors.purple[600],
       accentColor: Colors.purpleAccent[400],
 
@@ -22,7 +21,7 @@ void main() {
         bodyText2: TextStyle(fontSize: 14.0, fontFamily: 'Hind'),
       ),
     ),
-    initialRoute: '/FetchData',
+    initialRoute: '/',
     onGenerateRoute: RouteGenerator.generateRoute,
 
   ));

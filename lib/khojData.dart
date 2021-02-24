@@ -1,21 +1,12 @@
 import 'dart:convert';
 import 'dart:math';
 
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:newdictionary/pages/loading.dart';
-import 'package:newdictionary/pages/showWord.dart';
 import 'package:newdictionary/word.dart';
 
-import 'package:newdictionary/pages/home.dart';
+class KhojData{
 
-
-class FetchData extends StatefulWidget {
-  @override
-  _FetchDataState createState() => _FetchDataState();
-}
-
-class _FetchDataState extends State<FetchData> {
+  KhojData();
   bool isLoading = true;  // Data is Loading and Hashing
   List data;    //parsed json of words
   List<Word> words;   //decoded from json(data)
@@ -24,7 +15,7 @@ class _FetchDataState extends State<FetchData> {
   int p = 2038074743; // a prime number which will be used to mod in universal hash
   int bigPrime = 2760727302517;
   int a, b;  // random numbers which used in primary universal hashing,
-  int as, bs; // random numbers which used in secondary hashing
+//  int as, bs; // random numbers which used in secondary hashing
   List<List<int>> secondaryHashData = new List.generate(17000, (index) => []);
 
   List<List<Word>> hashedList = new List.generate(17000, (index) => []);  // list of words after hashing
@@ -38,9 +29,7 @@ class _FetchDataState extends State<FetchData> {
       words.add(Word.fromJson(word));
     }
     primaryHash();
-    setState(() {
-      isLoading = false;
-    });
+    isLoading = false;
   }
 
   //finding power of a number
@@ -56,10 +45,10 @@ class _FetchDataState extends State<FetchData> {
   int getKey(String name){
     name = name.replaceAll(new RegExp(r'[^\w\\s]+'),'');
     name.toLowerCase();
-    int key = 0;
+    int key = 1;
     int len = name.length;
     for(int i = len-1; i>=0; --i){
-      key = (key + ((name.codeUnitAt(i)-97)*pow(26, i))%bigPrime)%bigPrime;
+      key = (key + ((name.codeUnitAt(i)-97)*pow(26, i))%p)%p;
     }
     return key;
   }
@@ -100,7 +89,6 @@ class _FetchDataState extends State<FetchData> {
         hashedList[i][key] = word;
       }
     }
-    search("carry");
   }
 
   //searching a word
@@ -110,21 +98,16 @@ class _FetchDataState extends State<FetchData> {
     int mj = secondaryHashData[pkey][0];
     int as = secondaryHashData[pkey][1];
     int bs = secondaryHashData[pkey][2];
-    int skey = ((as*k+bs)%p)%mj;
-    Word wd = hashedList[pkey][skey];
-    Navigator.of(context).push(MaterialPageRoute(builder: (context)=>ShowWord(word: wd)));
-    print(hashedList[pkey][skey].en);
-    return hashedList[pkey][skey];
-  }
+    int skey;
+    Word found;
+    if(mj != 0){
+      skey = ((as*k+bs)%p)%mj;
+      found = hashedList[pkey][skey];
+    }
 
-  @override
-  void initState(){
-    super.initState();
-    getData();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return !isLoading?Home():Loading();
+    if(mj == 0 || found == null || found.en != word){
+      return null;
+    }
+    return found;
   }
 }
