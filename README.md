@@ -1,4 +1,4 @@
-# newdictionary
+# English-Bangla Dictionary
 
 A new Flutter application.
 
