@@ -13,11 +13,17 @@ class _HomeState extends State<Home> {
   TextEditingController textEditingController = new TextEditingController();
   String word;
   FetchData fetchData;
+
+  void fetchDataAndHash() async{
+    await fetchData.getData();
+    fetchData.primaryHash();
+    fetchData.secondaryHash();
+  }
   @override
   void initState(){
     super.initState();
     fetchData = new FetchData();
-    fetchData.getData();
+    fetchDataAndHash();
   }
   void submit(){
     word = textEditingController.text;

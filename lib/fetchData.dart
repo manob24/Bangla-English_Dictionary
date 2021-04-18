@@ -19,14 +19,13 @@ class FetchData{
   List<List<Word>> hashedList = new List.generate(17000, (index) => []);  // list of words after hashing
 
   //fetch data from json file
-  void getData() async{
+  Future<void> getData() async{
     String dictionaryText = await rootBundle.loadString('assets/BanglaDictionary.json');
     data = json.decode(dictionaryText);
     words = List<Word>();
     for(var word in data){
       words.add(Word.fromJson(word));
     }
-    primaryHash();
     isLoading = false;
   }
 
@@ -60,20 +59,17 @@ class FetchData{
       hashedList[key].add(word);
     }
     words.clear();
-    secondaryHash();
   }
 
   //resolving collision in primary hash
   void secondaryHash(){
     for(int i = 0; i<m; ++i){
-      int as = 1+random.nextInt(p-1);
-      int bs = random.nextInt(p);
+      int as = 1+random.nextInt(p-1); //a of secondary hashing
+      int bs = random.nextInt(p);     //b of secondary hashing
 
       List<Word> copied = List.from(hashedList[i]);
-//      print("$hashedList[i].length");
       hashedList[i].clear();
       int n = copied.length;
-//      print("$n");
       int mj = n*n;
       while(mj>0) {
         hashedList[i].clear();
@@ -81,7 +77,6 @@ class FetchData{
 
         as = 1+random.nextInt(p-1);
         bs = random.nextInt(p);
-//        print("as $as bs $bs mj $mj");
         bool done = true;
         for (Word word in copied) {
           int k = getKey(word.en);
@@ -104,7 +99,6 @@ class FetchData{
       secondaryHashData[i][1] = as;
       secondaryHashData[i][2] = bs;
     }
-    print("done");
   }
   String formatWord(String word){
     word = word.replaceAll(new RegExp(r'[^\w\\s]+'),'');
